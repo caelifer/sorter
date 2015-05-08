@@ -25,6 +25,7 @@ type genericSorter struct {
 	rule Rule
 }
 
+// By performs actual sort based on the rule provided. It implements Sorter interface.
 func (gc *genericSorter) By(r Rule) {
 	gc.rule = r
 	sort.Sort(gc)
