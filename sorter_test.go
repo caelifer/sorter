@@ -18,7 +18,7 @@ type rule struct {
 
 var tests = []struct {
 	rule rule
-	want []interface{}
+	want []V
 }{
 	{
 		rule: rule{
@@ -27,7 +27,7 @@ var tests = []struct {
 				return i1.(V).Number < i2.(V).Number
 			},
 		},
-		want: []interface{}{V{Name: "BBB", Number: 10}, V{Name: "AAA", Number: 10}, V{Name: "CCC", Number: 16}, V{Name: "AAA", Number: 20}, V{Name: "DDD", Number: 20}},
+		want: []V{{Name: "BBB", Number: 10}, {Name: "AAA", Number: 10}, {Name: "CCC", Number: 16}, {Name: "AAA", Number: 20}, {Name: "DDD", Number: 20}},
 	},
 	{
 		rule: rule{
@@ -36,7 +36,7 @@ var tests = []struct {
 				return i1.(V).Name < i2.(V).Name
 			},
 		},
-		want: []interface{}{V{Name: "AAA", Number: 20}, V{Name: "AAA", Number: 10}, V{Name: "BBB", Number: 10}, V{Name: "CCC", Number: 16}, V{Name: "DDD", Number: 20}},
+		want: []V{{Name: "AAA", Number: 20}, {Name: "AAA", Number: 10}, {Name: "BBB", Number: 10}, {Name: "CCC", Number: 16}, {Name: "DDD", Number: 20}},
 	},
 	{
 		rule: rule{
@@ -54,22 +54,24 @@ var tests = []struct {
 				}
 			},
 		},
-		want: []interface{}{V{Name: "AAA", Number: 10}, V{Name: "BBB", Number: 10}, V{Name: "CCC", Number: 16}, V{Name: "AAA", Number: 20}, V{Name: "DDD", Number: 20}},
+		want: []V{{Name: "AAA", Number: 10}, {Name: "BBB", Number: 10}, {Name: "CCC", Number: 16}, {Name: "AAA", Number: 20}, {Name: "DDD", Number: 20}},
 	},
 }
 
-var values = []interface{}{V{"BBB", 10}, V{"AAA", 20}, V{"CCC", 16}, V{"DDD", 20}, V{"AAA", 10}}
+var values = []V{{"BBB", 10}, {"AAA", 20}, {"CCC", 16}, {"DDD", 20}, {"AAA", 10}}
 
 func TestSorter(t *testing.T) {
 	for _, tst := range tests {
 
-		// Test our sorter interface
+		// Clone and convert our values to []interface{}
 		clone := cloneSlice(values)
+		want := cloneSlice(tst.want)
 
+		// Test our sorter interface
 		sorter.Sort(clone).By(tst.rule.Rule)
 
-		if !equal(clone, tst.want) {
-			t.Errorf("[FAILED] testing rule %s\n\tgot:    %+v\n\twanted: %+v", tst.rule.Name, clone, tst.want)
+		if !equal(clone, want) {
+			t.Errorf("[FAILED] testing rule %s\n\tgot:    %+v\n\twanted: %+v", tst.rule.Name, clone, want)
 		}
 	}
 }
@@ -91,6 +93,10 @@ func equal(v1, v2 []interface{}) bool {
 	return true
 }
 
-func cloneSlice(old []interface{}) []interface{} {
-	return append([]interface{}{}, old...)
+func cloneSlice(old []V) []interface{} {
+	res := make([]interface{}, len(old))
+	for i, v := range old {
+		res[i] = v
+	}
+	return res
 }
