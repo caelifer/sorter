@@ -26,21 +26,21 @@ type genericSorter struct {
 }
 
 // By performs actual sort based on the rule provided. It implements Sorter interface.
-func (gc *genericSorter) By(r Rule) {
-	gc.rule = r
-	sort.Sort(gc)
+func (gs *genericSorter) By(r Rule) {
+	gs.rule = r
+	sort.Sort(gs)
 }
 
 // Implement sort.Interface interface
 
-func (gc *genericSorter) Len() int {
-	return len(gc.vals)
+func (gs *genericSorter) Len() int {
+	return len(gs.vals)
 }
 
-func (gc *genericSorter) Swap(i, j int) {
-	gc.vals[i], gc.vals[j] = gc.vals[j], gc.vals[i]
+func (gs *genericSorter) Swap(i, j int) {
+	gs.vals[i], gs.vals[j] = gs.vals[j], gs.vals[i]
 }
 
-func (gc *genericSorter) Less(i, j int) bool {
-	return gc.rule(gc.vals[i], gc.vals[j])
+func (gs *genericSorter) Less(i, j int) bool {
+	return gs.rule(gs.vals[i], gs.vals[j])
 }
