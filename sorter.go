@@ -1,5 +1,7 @@
 package sorter
 
+import "sort"
+
 // Rule is a generic comparator. Client must provide its own specific implementation per each type.
 type Rule func(i1, i2 interface{}) bool
 
