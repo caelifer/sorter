@@ -1,7 +1,9 @@
 package sorter_test
 
 import (
+	"math/rand"
 	"testing"
+	"sort"
 
 	"github.com/caelifer/sorter"
 )
@@ -99,4 +101,54 @@ func cloneSlice(old []V) []interface{} {
 		res[i] = v
 	}
 	return res
+}
+
+var testInts []int
+
+func init() {
+	rand.Seed(0) // deterministic rand generator
+	testInts = genRandInts()
+}
+
+func genRandInts() []int {
+	const size = 1000
+	ints := make([]int, size)
+
+	for i := 0; i < size; i++ {
+		ints[i] = rand.Intn(size)
+	}
+
+	return ints
+}
+
+func cloneInts(old []int) []int {
+	res := make([]int, len(old))
+	for i, v := range old {
+		res[i] = v
+	}
+	return res
+}
+
+func cloneGens(old []int) []interface{} {
+	res := make([]interface{}, len(old))
+	for i, v := range old {
+		res[i] = v
+	}
+	return res
+}
+
+func BenchmarkStdSort(b *testing.B) {
+	is := cloneInts(testInts)
+	for i := 0; i < b.N; i++ {
+		sort.Ints(is)
+	}
+}
+
+func BenchmarkSorter_(b *testing.B) {
+	is := cloneGens(testInts)
+	for i := 0; i < b.N; i++ {
+		sorter.Sort(is).By(func(i1, i2 interface{}) bool {
+			return i1.(int) < i2.(int)
+		})
+	}
 }
