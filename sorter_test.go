@@ -2,8 +2,8 @@ package sorter_test
 
 import (
 	"math/rand"
-	"testing"
 	"sort"
+	"testing"
 
 	"github.com/caelifer/sorter"
 )
@@ -52,7 +52,7 @@ var tests = []struct {
 				case n2.Number < n1.Number:
 					return false
 				default:
-					return n1.Name < n2.Name
+					return n1.Name <= n2.Name
 				}
 			},
 		},
@@ -111,7 +111,7 @@ func init() {
 }
 
 func genRandInts() []int {
-	const size = 1000
+	const size = 1024
 	ints := make([]int, size)
 
 	for i := 0; i < size; i++ {
@@ -144,7 +144,7 @@ func BenchmarkStdSort(b *testing.B) {
 	}
 }
 
-func BenchmarkSorter_(b *testing.B) {
+func BenchmarkGenSort(b *testing.B) {
 	is := cloneGens(testInts)
 	for i := 0; i < b.N; i++ {
 		sorter.Sort(is).By(func(i1, i2 interface{}) bool {
